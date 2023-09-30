@@ -18,10 +18,18 @@ namespace HackatonCode8.Infrastructure
 			
 			// Registers the AppDbContext as a service with the specified connection string
 			services.AddDbContext<IApplicationDbContext, AppDbContext>(options =>
-				options.UseSqlServer(configuration.GetConnectionString("defaultConnectionString")));
+				options.UseSqlServer(configuration.GetConnectionString("def")));
 
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:5173");
+                });
+            });
 
-			services.AddMediatR(typeof(IApplicationDbContext));
+            services.AddHttpClient();
+            services.AddMediatR(typeof(IApplicationDbContext));
 
 			// Registers IApplicationDbContext as a scoped service, using the AppDbContext implementation
 			//services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<AppDbContext>());
